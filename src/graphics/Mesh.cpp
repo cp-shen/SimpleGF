@@ -1,18 +1,32 @@
-#include "common.h"
+#include <stdexcept> // runtime_error
+#include <cstring> // memcpy
+#include <vector>
 
-#include <stdexcept>
+#include "./GraphicsCommon.h"
 
-using namespace GLPractice;
+using namespace SimpleGF;
 
-Mesh::Mesh():
-    _vertexCount(0),
-    _indexCount(0),
-    _vertexData(NULL),
-    _indexData(NULL),
-    _vao(0),
-    _vbo(0),
-    _ebo(0)
+Mesh::Mesh()
+    : _vertexCount(0)
+    , _indexCount(0)
+    , _vertexData(nullptr)
+    , _indexData(nullptr)
+    , _vao(0)
+    , _vbo(0)
+    , _ebo(0)
 { }
+
+Mesh::Mesh(std::vector<GLfloat>& vertData)
+    : Mesh()
+{
+    setVertexData(vertData.data(), vertData.size());
+}
+
+Mesh::Mesh(std::vector<GLfloat>& vertData, std::vector<GLuint>& idxData)
+    : Mesh(vertData)
+{
+    setIndexData(idxData.data(), idxData.size());
+}
 
 Mesh::~Mesh() {
     if(_vertexData)
@@ -32,7 +46,7 @@ void Mesh::setVertexData(const GLfloat* data, unsigned count) {
 
     _vertexCount = count;
     _vertexData = new GLfloat[count];
-    memcpy(_vertexData, data, count * sizeof(float));
+    memcpy(_vertexData, data, count * sizeof(GLfloat));
 }
 
 void Mesh::setIndexData(const GLuint* data, unsigned count) {
@@ -44,15 +58,15 @@ void Mesh::setIndexData(const GLuint* data, unsigned count) {
 
     _indexCount = count;
     _indexData = new GLuint[count];
-    memcpy(_indexData, data, count * sizeof(unsigned));
+    memcpy(_indexData, data, count * sizeof(GLuint));
 }
 
 void Mesh::getVertexData(GLfloat* buf) {
-    memcpy(buf, _vertexData, _vertexCount * sizeof(float));
+    memcpy(buf, _vertexData, _vertexCount * sizeof(GLfloat));
 }
 
 void Mesh::getIndexData(GLuint* buf) {
-    memcpy(buf, _vertexData, _vertexCount * sizeof(unsigned));
+    memcpy(buf, _vertexData, _vertexCount * sizeof(GLuint));
 }
 
 
@@ -64,12 +78,21 @@ unsigned Mesh::getIndexCount() {
     return _indexCount;
 }
 
+GLuint Mesh::vao() {
+    return _vao;
+}
+
+GLuint Mesh::vbo() {
+    return _vbo;
+}
+
+GLuint Mesh::ebo() {
+    return _ebo;
+}
+
 void Mesh::load() {
     if(!_vertexData)
         throw std::runtime_error("no vertex data in mesh to load");
-
-    if(!_indexData)
-        throw std::runtime_error("no index data in mesh to load");
 
     unload();
 
@@ -80,9 +103,11 @@ void Mesh::load() {
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, _vertexCount * sizeof(GLfloat), _vertexData, GL_STATIC_DRAW);
 
-    glGenBuffers(1, &_ebo);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(GLuint), _indexData, GL_STATIC_DRAW);
+    if(!_indexData) {
+        glGenBuffers(1, &_ebo);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(GLuint), _indexData, GL_STATIC_DRAW);
+    }
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -102,16 +127,4 @@ void Mesh::unload() {
         glDeleteBuffers(1, &_ebo);
         _ebo = 0;
     }
-}
-
-GLuint Mesh::vao() {
-    return _vao;
-}
-
-GLuint Mesh::vbo() {
-    return _vbo;
-}
-
-GLuint Mesh::ebo() {
-    return _ebo;
 }

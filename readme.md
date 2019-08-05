@@ -2,4 +2,8 @@
 
 ## Dependencies
 
+- glew
+- glfw
+- raymath
+
 ## Building Guide

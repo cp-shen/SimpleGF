@@ -1,26 +1,25 @@
-#include "common.h"
-
-#include <GLFW/glfw3.h>
+#include "../graphics/GraphicsCommon.h"
 
 #include <stdexcept>
 #include <iostream>
 #include <string>
 #include <unordered_set>
 
+#include <GLFW/glfw3.h>
 #include <catch.hpp>
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600
 
-using namespace GLPractice;
+using namespace SimpleGF;
 
 Transform g_modelTransform;
 Camera g_camera;
 
-GLProgram* g_program = NULL;
-Mesh* g_mesh = NULL;
-MeshRenderer* g_meshRenderer = NULL;
-GLFWwindow* g_window = NULL;
+ShaderProgram* g_program = nullptr;
+Mesh* g_mesh = nullptr;
+MeshRenderer* g_meshRenderer = nullptr;
+GLFWwindow* g_window = nullptr;
 
 std::unordered_set<void(*)()> g_prerenderCallbacks;
 
@@ -30,15 +29,15 @@ std::string g_fShaderPath = "../shaders/fShader.frag";
 void appRelease(){
     if(!g_program){
         delete g_program;
-        g_program = NULL;
+        g_program = nullptr;
     }
     if(!g_mesh){
         delete g_mesh;
-        g_mesh = NULL;
+        g_mesh = nullptr;
     }
     if(!g_meshRenderer) {
         delete g_meshRenderer;
-        g_meshRenderer = NULL;
+        g_meshRenderer = nullptr;
     }
     if(!g_window) {
         glfwDestroyWindow(g_window);
@@ -65,7 +64,7 @@ void loadShaders() {
     const GLShader& fShader = GLShader::shaderFromFile(g_fShaderPath.c_str(), GL_FRAGMENT_SHADER);
     GLuint shaders[2] {vShader.getObjectId(), fShader.getObjectId()};
 
-    g_program = new GLProgram(shaders, 2);
+    g_program = new ShaderProgram(shaders, 2);
 }
 
 void loadMeshData() {
@@ -120,9 +119,9 @@ void loadMeshData() {
 void updateUniform() {
     glUseProgram(g_program->getObjectId());
 
-    GLint modelUniformLoc = g_program->GetUniformLocation("model");
-    GLint viewUniformLoc = g_program->GetUniformLocation("view");
-    GLint projUniformLoc = g_program->GetUniformLocation("projection");
+    GLint modelUniformLoc = g_program->getUniformLocation("model");
+    GLint viewUniformLoc = g_program->getUniformLocation("view");
+    GLint projUniformLoc = g_program->getUniformLocation("projection");
 
     // rotate this model around Y axis by frame
     //Vector3 yAxis = Vector3Zero();
@@ -286,7 +285,7 @@ void appInit(){
 
     // create glfw window
     g_window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,
-            "OpenGL Practice", NULL, NULL);
+            "OpenGL Practice", nullptr, nullptr);
     if(!g_window)
         throw std::runtime_error("glfwCreateWindow failed");
 
@@ -387,24 +386,3 @@ void appMain() {
     //return EXIT_SUCCESS;
 //}
 
-TEST_CASE("my test", "[y],[x]") {
-    try {
-        appMain();
-    }
-    catch(const std::exception& e) {
-        appRelease();
-
-        std::cerr << "ERROR: " << e.what() << std::endl;
-    }
-}
-
-TEST_CASE("my test2", "[x]") {
-    try {
-        appMain();
-    }
-    catch(const std::exception& e) {
-        appRelease();
-
-        std::cerr << "ERROR: " << e.what() << std::endl;
-    }
-}

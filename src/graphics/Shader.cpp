@@ -1,11 +1,13 @@
-#include "common.h"
-#include <stdexcept>
-#include <fstream>
-#include <sstream>
+#include <fstream> // ifstream
+#include <sstream> // stringstream
+#include <cstring> // strlen
+#include <stdexcept> // runtime_error
 
-using namespace GLPractice;
+#include "./GraphicsCommon.h"
 
-GLShader::GLShader(const char* shaderCode, GLenum shaderType) {
+using namespace SimpleGF;
+
+Shader::Shader(const char* shaderCode, GLenum shaderType) {
     // create shader object
     _objectId = glCreateShader(shaderType);
     if(_objectId == 0)
@@ -29,7 +31,7 @@ GLShader::GLShader(const char* shaderCode, GLenum shaderType) {
         glGetShaderiv(_objectId, GL_INFO_LOG_LENGTH, &infoLogLength);
 
         GLchar infoLog[infoLogLength + 1];
-        glGetShaderInfoLog(_objectId, infoLogLength, NULL, infoLog);
+        glGetShaderInfoLog(_objectId, infoLogLength, nullptr, infoLog);
 
         glDeleteShader(_objectId);
 
@@ -39,16 +41,11 @@ GLShader::GLShader(const char* shaderCode, GLenum shaderType) {
     }
 }
 
-GLShader::~GLShader(){
-    if(_objectId != 0)
-        glDeleteShader(_objectId);
+Shader::~Shader(){
+    glDeleteShader(_objectId);
 }
 
-GLuint GLShader::getObjectId() const {
-    return _objectId;
-}
-
-GLShader GLShader::shaderFromFile(const char* filePath, GLenum shaderType){
+std::shared_ptr<Shader> Shader::shaderFromFile(const char* filePath, GLenum shaderType){
     std::ifstream f;
     f.open(filePath, std::ios::in | std::ios::binary);
     if(!f.is_open())
@@ -57,6 +54,9 @@ GLShader GLShader::shaderFromFile(const char* filePath, GLenum shaderType){
     std::stringstream buffer;
     buffer << f.rdbuf();
 
-    GLShader shader(buffer.str().c_str(), shaderType);
-    return shader;
+    return std::make_shared<Shader>(buffer.str().c_str(), shaderType);
+}
+
+GLuint Shader::getObjectId() {
+    return _objectId;
 }
