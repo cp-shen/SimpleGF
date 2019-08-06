@@ -18,7 +18,7 @@ Camera g_camera;
 
 ShaderProgram* g_program = nullptr;
 Mesh* g_mesh = nullptr;
-MeshRenderer* g_meshRenderer = nullptr;
+//MeshRenderer* g_meshRenderer = nullptr;
 GLFWwindow* g_window = nullptr;
 
 std::unordered_set<void(*)()> g_prerenderCallbacks;
@@ -35,10 +35,10 @@ void appRelease(){
         delete g_mesh;
         g_mesh = nullptr;
     }
-    if(!g_meshRenderer) {
-        delete g_meshRenderer;
-        g_meshRenderer = nullptr;
-    }
+    //if(!g_meshRenderer) {
+        //delete g_meshRenderer;
+        //g_meshRenderer = nullptr;
+    //}
     if(!g_window) {
         glfwDestroyWindow(g_window);
     }
@@ -60,11 +60,11 @@ void printMatrix(Matrix mat) {
 }
 
 void loadShaders() {
-    const GLShader& vShader = GLShader::shaderFromFile(g_vShaderPath.c_str(), GL_VERTEX_SHADER);
-    const GLShader& fShader = GLShader::shaderFromFile(g_fShaderPath.c_str(), GL_FRAGMENT_SHADER);
-    GLuint shaders[2] {vShader.getObjectId(), fShader.getObjectId()};
+    //const GLShader& vShader = GLShader::shaderFromFile(g_vShaderPath.c_str(), GL_VERTEX_SHADER);
+    //const GLShader& fShader = GLShader::shaderFromFile(g_fShaderPath.c_str(), GL_FRAGMENT_SHADER);
+    //GLuint shaders[2] {vShader.objectId(), fShader.objectId()};
 
-    g_program = new ShaderProgram(shaders, 2);
+    //g_program = new ShaderProgram(shaders, 2);
 }
 
 void loadMeshData() {
@@ -113,11 +113,11 @@ void loadMeshData() {
     g_mesh->setIndexData(indexData, sizeof(indexData) / sizeof(GLuint));
     g_mesh->load();
 
-    g_meshRenderer = new MeshRenderer(g_mesh, g_program);
+    //g_meshRenderer = new MeshRenderer(g_mesh, g_program);
 }
 
 void updateUniform() {
-    glUseProgram(g_program->getObjectId());
+    glUseProgram(g_program->objectId());
 
     GLint modelUniformLoc = g_program->getUniformLocation("model");
     GLint viewUniformLoc = g_program->getUniformLocation("view");
@@ -353,7 +353,7 @@ void appMain() {
                 func();
         }
 
-        g_meshRenderer->render();
+        //g_meshRenderer->render();
 
         glfwSwapBuffers(g_window);
     }

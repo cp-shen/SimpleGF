@@ -26,6 +26,9 @@ ShaderProgram::~ShaderProgram(){
     glDeleteProgram(_objectId);
 }
 
+GLuint ShaderProgram::objectId() const{
+    return _objectId;
+}
 
 GLint ShaderProgram::getAttribLocation(const GLchar* attribName) const {
     if(!attribName)
@@ -58,7 +61,7 @@ void ShaderProgram::_attachShaders() {
 
     for(auto shader_ptr : _shaders){
         assert(shader_ptr != nullptr);
-        glAttachShader(_objectId, shader_ptr->getObjectId());
+        glAttachShader(_objectId, shader_ptr->objectId());
     }
 
     glLinkProgram(_objectId);
@@ -66,7 +69,7 @@ void ShaderProgram::_attachShaders() {
 
     for(auto shader_ptr : _shaders){
         assert(shader_ptr != nullptr);
-        glDetachShader(_objectId, shader_ptr->getObjectId());
+        glDetachShader(_objectId, shader_ptr->objectId());
     }
 
     // check link error

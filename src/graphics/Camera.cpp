@@ -12,11 +12,15 @@ Camera::Camera() {
     rotation = QuaternionIdentity();
 }
 
-Matrix Camera::projectionMatrix() {
+Camera::~Camera() {
+
+}
+
+Matrix Camera::projectionMatrix() const {
     return MatrixPerspective(fov, aspect, near, far);
 }
 
-Matrix Camera::viewMatrix() {
+Matrix Camera::viewMatrix() const {
     Vector3 forwardDir = Vector3Zero();
     forwardDir.z = 1;
     forwardDir = Vector3RotateByQuaternion(forwardDir, rotation);
@@ -29,3 +33,10 @@ Matrix Camera::viewMatrix() {
 
     return MatrixLookAt(position, target, upDir);
 }
+
+void Camera::setAspectByWindow(const Window& window) {
+    int bufWidth, bufHeight;
+    glfwGetFramebufferSize(window.getGLFWwindow(), &bufWidth, &bufHeight);
+    aspect = (GLfloat) bufWidth / (GLfloat) bufHeight;
+}
+

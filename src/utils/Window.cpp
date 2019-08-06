@@ -15,7 +15,7 @@ Window::Window(int wWidth, int wHeight, const char* title) {
 }
 
 Window::~Window() {
-    glfwTerminate();
+    glfwDestroyWindow(_glfwWindow);
 }
 
 GLFWwindow* Window::getGLFWwindow() const {

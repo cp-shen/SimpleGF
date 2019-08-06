@@ -21,7 +21,7 @@ struct Transform {
             translation = Vector3Zero();
         }
 
-        Matrix toMatrix() {
+        Matrix toMatrix() const {
             Matrix mScale = MatrixScale(scale.x, scale.y, scale.z);
             Matrix mRotate = QuaternionToMatrix(rotation);
             Matrix mTranslate = MatrixTranslate(translation.x, translation.y, translation.z);

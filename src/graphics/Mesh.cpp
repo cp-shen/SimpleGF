@@ -20,12 +20,15 @@ Mesh::Mesh(std::vector<GLfloat>& vertData)
     : Mesh()
 {
     setVertexData(vertData.data(), vertData.size());
+    load();
 }
 
 Mesh::Mesh(std::vector<GLfloat>& vertData, std::vector<GLuint>& idxData)
-    : Mesh(vertData)
+    : Mesh()
 {
+    setVertexData(vertData.data(), vertData.size());
     setIndexData(idxData.data(), idxData.size());
+    load();
 }
 
 Mesh::~Mesh() {
@@ -61,32 +64,32 @@ void Mesh::setIndexData(const GLuint* data, unsigned count) {
     memcpy(_indexData, data, count * sizeof(GLuint));
 }
 
-void Mesh::getVertexData(GLfloat* buf) {
+void Mesh::getVertexData(GLfloat* buf) const {
     memcpy(buf, _vertexData, _vertexCount * sizeof(GLfloat));
 }
 
-void Mesh::getIndexData(GLuint* buf) {
+void Mesh::getIndexData(GLuint* buf) const {
     memcpy(buf, _vertexData, _vertexCount * sizeof(GLuint));
 }
 
 
-unsigned Mesh::getVertexCount() {
+unsigned Mesh::getVertexCount() const {
     return _vertexCount;
 }
 
-unsigned Mesh::getIndexCount() {
+unsigned Mesh::getIndexCount() const {
     return _indexCount;
 }
 
-GLuint Mesh::vao() {
+GLuint Mesh::vao() const {
     return _vao;
 }
 
-GLuint Mesh::vbo() {
+GLuint Mesh::vbo() const {
     return _vbo;
 }
 
-GLuint Mesh::ebo() {
+GLuint Mesh::ebo() const {
     return _ebo;
 }
 
@@ -103,7 +106,7 @@ void Mesh::load() {
     glBindBuffer(GL_ARRAY_BUFFER, _vbo);
     glBufferData(GL_ARRAY_BUFFER, _vertexCount * sizeof(GLfloat), _vertexData, GL_STATIC_DRAW);
 
-    if(!_indexData) {
+    if(_indexData) {
         glGenBuffers(1, &_ebo);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, _indexCount * sizeof(GLuint), _indexData, GL_STATIC_DRAW);

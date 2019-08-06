@@ -7,29 +7,23 @@
 
 #include "./GraphicsAbstraction.h"
 #include "../math/MathCommom.h"
+#include "../utils/UtilsCommon.h"
 
 namespace SimpleGF {
 
 class Shader {
     public:
         Shader(const char* shaderCode, GLenum shaderType);
-        ~Shader();
+        virtual ~Shader();
 
         static std::shared_ptr<Shader> shaderFromFile(const char* filePath, GLenum shaderType);
-        GLuint getObjectId();
+        GLuint objectId() const;
 
     private:
         GLuint _objectId;
 
-        Shader(const Shader& other);
-        Shader& operator=(const Shader& other);
-};
-
-class ShaderVertAttrib {
-    private:
-        std::string name;
-        int location;
-        GLenum type;
+        Shader(const Shader& other) = default;
+        Shader& operator=(const Shader& other) = default;
 };
 
 class ShaderUnifrom {
@@ -42,9 +36,9 @@ class ShaderUnifrom {
 class ShaderProgram {
     public:
         ShaderProgram(const std::vector<std::shared_ptr<Shader> >& shaders);
-        ~ShaderProgram();
+        virtual ~ShaderProgram();
 
-        GLuint getObjectId();
+        GLuint objectId() const;
         GLint getAttribLocation(const GLchar* attribName) const;
         GLint getUniformLocation(const GLchar* uniformName) const;
 
@@ -52,10 +46,45 @@ class ShaderProgram {
         GLuint _objectId;
         std::vector<std::shared_ptr<Shader> > _shaders;
 
-        ShaderProgram(const ShaderProgram& other);
-        ShaderProgram& operator=(const ShaderProgram& other);
+        ShaderProgram(const ShaderProgram& other) = default;
+        ShaderProgram& operator=(const ShaderProgram& other) = default;
 
         void _attachShaders();
+};
+
+class BaseVertexAttribData {
+    public:
+        BaseVertexAttribData();
+        virtual ~BaseVertexAttribData() = 0;
+    protected:
+        std::string _attribName;
+        unsigned _attribSize;
+        GLenum _type;
+        unsigned _count;
+};
+
+template<typename T>
+class VertexAttribData : BaseVertexAttribData {
+    public:
+        VertexAttribData(const char* name,
+                GLenum type,
+                unsigned attribSize,
+                const T* data,
+                unsigned count);
+        virtual ~VertexAttribData();
+    private:
+        T* _data;
+};
+#include "./VertexAttribData_Impl.h"
+
+class VertexIndexData {
+    public:
+        VertexIndexData(const GLuint* data, unsigned count);
+        virtual ~VertexIndexData();
+    private:
+        void _set(const GLuint* data, unsigned count);
+        GLuint* _data;
+        unsigned _count;
 };
 
 class Mesh {
@@ -67,13 +96,13 @@ class Mesh {
 
         void setVertexData(const GLfloat* data, unsigned count);
         void setIndexData(const GLuint* data, unsigned count);
-        void getVertexData(GLfloat* buf);
-        void getIndexData(GLuint* buf);
-        unsigned getVertexCount();
-        unsigned getIndexCount();
-        GLuint vao();
-        GLuint vbo();
-        GLuint ebo();
+        void getVertexData(GLfloat* buf) const;
+        void getIndexData(GLuint* buf) const;
+        unsigned getVertexCount() const;
+        unsigned getIndexCount() const;
+        GLuint vao() const;
+        GLuint vbo() const;
+        GLuint ebo() const;
         void load();
         void unload();
 
@@ -86,52 +115,73 @@ class Mesh {
         GLuint _vbo;
         GLuint _ebo;
 
-        Mesh& operator=(const Mesh& other);
-        Mesh(const Mesh& other);
+        Mesh& operator=(const Mesh& other) = default;
+        Mesh(const Mesh& other) = default;
 };
 
 // TODO: each of r, g, b, a should be clamped between 0.0f and 1.0f
 // TODO: adding operator *, +
-struct Color {
+class Color {
     public:
         float r;
         float g;
         float b;
         float a;
-        Color() {
-            // default white color
-            r = 1.0f;
-            g = 1.0f;
-            b = 1.0f;
-            a = 1.0f;
-        }
-        Color(float r, float g, float b) {
-            this->r = r;
-            this->g = g;
-            this->b = b;
-        }
-        Color(float r, float g, float b, float a) {
-            this->r = r;
-            this->g = g;
-            this->b = b;
-            this->a = a;
-        }
+        Color();
+        Color(float r, float g, float b);
+        Color(float r, float g, float b, float a);
+};
+
+enum class ImageFormat {
+    Format_Grayscale = 1, /**< one channel: grayscale */
+    Format_GrayscaleAlpha = 2, /**< two channels: grayscale and alpha */
+    Format_RGB = 3, /**< three channels: red, green, blue */
+    Format_RGBA = 4 /**< four channels: red, green, blue, alpha */
+};
+
+class Image {
+    public:
+        Image(unsigned width, unsigned height, ImageFormat format,
+                const unsigned char* pixels);
+        virtual ~Image();
+        static std::shared_ptr<Image> imageFromFile(const char* filePath);
+        void flipVertically();
+        unsigned width() const;
+        unsigned height() const;
+        ImageFormat format() const;
+        unsigned char* pixelBuffer() const;
+    private:
+        unsigned _width;
+        unsigned _height;
+        ImageFormat _format;
+        unsigned char* _pixels;
+
+        Image(const Image& other) = default;
+        Image& operator=(const Image& other) = default;
+
+        void _set(unsigned width, unsigned height, ImageFormat format,
+                const unsigned char* pixels);
 };
 
 class Texture2D {
     public:
         Texture2D();
-        ~Texture2D();
-
+        Texture2D(const Image& img,
+                GLint minMagFiler = GL_LINEAR,
+                GLint wrapMode = GL_CLAMP_TO_EDGE);
+        virtual ~Texture2D();
+        GLuint objectId() const;
+        unsigned width() const;
+        unsigned height() const;
     private:
         GLuint _objectId;
-        int width;
-        int height;
-        int mipmapLevel;
-        int format;
+        unsigned _width;
+        unsigned _height;
+        //int _mipmapLevel; // default to 1
+        //int _format;
 
-        Texture2D(const Texture2D& other);
-        Texture2D& operator=(const Texture2D& other);
+        Texture2D(const Texture2D& other) = default;
+        Texture2D& operator=(const Texture2D& other) = default;
 };
 
 class MaterialMap {
@@ -145,11 +195,11 @@ class MaterialArg {
 
 };
 
-struct Material {
+class Material {
     public:
         Material();
         Material(std::shared_ptr<ShaderProgram> shader);
-        ~Material();
+        virtual ~Material();
 
         Material(const Material& other) = default;
         Material& operator=(const Material& other) = default;
@@ -162,7 +212,7 @@ struct Material {
 class Model {
     public:
         Model();
-        ~Model();
+        virtual ~Model();
 
         Model(const Model& other) = default;
         Model& operator=(const Model& other) = default;
@@ -173,13 +223,14 @@ class Model {
         std::vector<std::pair<std::shared_ptr<Mesh>, std::shared_ptr<Material>>> _meshMatPairs;
 };
 
-struct Camera {
+class Camera {
     public:
         Camera();
-        ~Camera();
+        virtual ~Camera();
 
-        Matrix projectionMatrix();
-        Matrix viewMatrix();
+        Matrix projectionMatrix() const;
+        Matrix viewMatrix() const;
+        void setAspectByWindow(const Window& window);
 
         float fov; // field of view, in radians
         float aspect; // width / height;
@@ -193,15 +244,15 @@ struct Camera {
 class Renderer {
     public:
         Renderer();
-        ~Renderer();
+        virtual ~Renderer();
 
         Color clearColor;
 
-        void drawMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material,
-                std::shared_ptr<Camera> camera, Transform modelTransform);
+        void drawMesh(const Mesh& mesh, const Material& material,
+                const Camera& camera, const Transform& modelTransform);
 
     private:
-        void loadMesh(std::shared_ptr<Mesh> mesh, std::shared_ptr<Material> material);
+        void loadMesh(const Mesh& mesh, const Material& material);
         // disable copying
         Renderer(const Renderer& other) = default;
         Renderer& operator=(const Renderer& other) = default;

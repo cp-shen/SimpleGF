@@ -57,6 +57,6 @@ std::shared_ptr<Shader> Shader::shaderFromFile(const char* filePath, GLenum shad
     return std::make_shared<Shader>(buffer.str().c_str(), shaderType);
 }
 
-GLuint Shader::getObjectId() {
+GLuint Shader::objectId() const{
     return _objectId;
 }
