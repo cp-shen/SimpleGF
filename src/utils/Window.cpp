@@ -1,5 +1,6 @@
 #include <stdexcept> // runtime_error
 #include <iostream> // std::cout
+#include <cassert> // std::cout
 
 #include "../graphics/GraphicsCommon.h"
 #include "./UtilsCommon.h"
@@ -15,11 +16,9 @@ Window::Window(int wWidth, int wHeight, const char* title) {
 }
 
 Window::~Window() {
+    assert(_glfwWindow);
     glfwDestroyWindow(_glfwWindow);
-}
-
-GLFWwindow* Window::getGLFWwindow() const {
-    return _glfwWindow;
+    std::cout << "Window Closed" << std::endl;
 }
 
 void Window::swapBuffers() const {
@@ -81,4 +80,18 @@ void Window::_printGLInfo() {
     std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
+}
+
+unsigned Window::width() const {
+    int w = 0;
+    int h = 0;
+    glfwGetFramebufferSize(_glfwWindow, &w, &h);
+    return (unsigned) w;
+}
+
+unsigned Window::height() const {
+    int w = 0;
+    int h = 0;
+    glfwGetFramebufferSize(_glfwWindow, &w, &h);
+    return (unsigned) h;
 }

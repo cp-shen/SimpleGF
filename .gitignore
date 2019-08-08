@@ -50,3 +50,4 @@ _deps
 *[Bb]uild*/
 tags
 /[Rr]esources/images/
+.gdb_history

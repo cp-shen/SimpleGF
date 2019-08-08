@@ -2,6 +2,8 @@
 #define GRAPHICS_COMMOH_H
 
 #include <vector>
+#include <cstring> // memcpy
+#include <stdexcept> // runtime_error
 #include <memory> // shared_ptr
 #include <utility> // pair
 
@@ -53,53 +55,66 @@ class ShaderProgram {
 };
 
 class BaseVertexAttribData {
+    friend class Mesh;
     public:
-        BaseVertexAttribData();
-        virtual ~BaseVertexAttribData() = 0;
+        BaseVertexAttribData() = default;
+        virtual ~BaseVertexAttribData() = default;
+        unsigned vertexCount() const { return _vertexCount; };
     protected:
+        virtual void _load() = 0;
         std::string _attribName;
         unsigned _attribSize;
         GLenum _type;
-        unsigned _count;
+        unsigned _vertexCount;
+        GLuint _vbo;
 };
 
 template<typename T>
 class VertexAttribData : BaseVertexAttribData {
+    friend class Mesh;
     public:
         VertexAttribData(const char* name,
                 GLenum type,
                 unsigned attribSize,
                 const T* data,
-                unsigned count);
+                unsigned vertexCount);
         virtual ~VertexAttribData();
+    protected:
+        void _load();
     private:
         T* _data;
 };
 #include "./VertexAttribData_Impl.h"
 
 class VertexIndexData {
+    friend class Mesh;
     public:
-        VertexIndexData(const GLuint* data, unsigned count);
+        VertexIndexData(const GLuint* data, unsigned vertexCount);
         virtual ~VertexIndexData();
+        const GLuint* data() const;
+        unsigned vertexCount() const;
     private:
-        void _set(const GLuint* data, unsigned count);
+        void _load();
+        void _set(const GLuint* data, unsigned vertexCount);
         GLuint* _data;
-        unsigned _count;
+        GLuint _ibo;
+        unsigned _vertexCount;
 };
 
 class Mesh {
     public:
         Mesh();
-        Mesh(std::vector<GLfloat>& vertData);
-        Mesh(std::vector<GLfloat>& vertData, std::vector<GLuint>& idxData);
+        //Mesh(std::vector<GLfloat>& vertData);
+        //Mesh(std::vector<GLfloat>& vertData, std::vector<GLuint>& idxData);
         virtual ~Mesh();
 
-        void setVertexData(const GLfloat* data, unsigned count);
-        void setIndexData(const GLuint* data, unsigned count);
-        void getVertexData(GLfloat* buf) const;
-        void getIndexData(GLuint* buf) const;
-        unsigned getVertexCount() const;
-        unsigned getIndexCount() const;
+        //void setVertexData(const GLfloat* data, unsigned count);
+        void setIndexData(std::shared_ptr<VertexIndexData> idxData);
+        void addAttribData(std::shared_ptr<BaseVertexAttribData> attribData);
+        //void getVertexData(GLfloat* buf) const;
+        //void getIndexData(GLuint* buf) const;
+        //unsigned getVertexCount() const;
+        //unsigned getIndexCount() const;
         GLuint vao() const;
         GLuint vbo() const;
         GLuint ebo() const;
@@ -107,10 +122,13 @@ class Mesh {
         void unload();
 
     private:
-        unsigned _vertexCount;
-        unsigned _indexCount;
+        std::vector<std::shared_ptr<BaseVertexAttribData>> _attribData;
+        std::shared_ptr<VertexIndexData> _indexData;
+
+        //unsigned _vertexCount;
+        //unsigned _indexCount;
         GLfloat* _vertexData;
-        GLuint* _indexData;
+        //GLuint* _indexData;
         GLuint _vao;
         GLuint _vbo;
         GLuint _ebo;

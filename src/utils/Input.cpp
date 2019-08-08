@@ -3,7 +3,7 @@
 using namespace SimpleGF;
 
 bool Input::getKeyDown(const Window& window, int key) {
-    if (glfwGetKey(window.getGLFWwindow(), key) == GLFW_PRESS)
+    if (glfwGetKey(window._glfwWindow, key) == GLFW_PRESS)
         return true;
     return false;
 }

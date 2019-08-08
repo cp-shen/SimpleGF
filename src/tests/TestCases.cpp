@@ -56,100 +56,56 @@ static std::vector<GLuint> triIdxData {
     0, 1, 2
 };
 
-TEST_CASE("Window_alloc") {
-    std::shared_ptr<Window> window;
-    REQUIRE_NOTHROW(window = std::make_shared<Window>(
-                WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE));
-}
 
-TEST_CASE("Mesh_alloc") {
-    auto window = std::make_shared<Window>( WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
-    std::shared_ptr<Mesh> mesh;
-    REQUIRE_NOTHROW(mesh = std::make_shared<Mesh>(cubeVertPosData, cubeIdxData));
-    REQUIRE_NOTHROW(mesh->load());
-    REQUIRE_NOTHROW(mesh->unload());
-}
+TEST_CASE("Draw") {
+    REQUIRE_NOTHROW( Application::init(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE) );
 
-TEST_CASE("Shader_loading") {
-    auto window = std::make_shared<Window>(WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
-    std::shared_ptr<Shader> vShader;
-    std::shared_ptr<Shader> fShader;
-    std::shared_ptr<ShaderProgram> shaderProgram;
+    SECTION("Draw_Section") {
+        std::vector<std::shared_ptr<Shader>> shaders;
+        std::shared_ptr<ShaderProgram> shaderProgram;
+        std::shared_ptr<Window> window;
+        std::shared_ptr<Mesh> mesh;
+        std::shared_ptr<Material> material;
+        std::shared_ptr<Renderer> renderer;
+        std::shared_ptr<Image> img;
+        std::shared_ptr<Texture2D> tex;
 
-    REQUIRE_NOTHROW(vShader = Shader::shaderFromFile(vShaderPath, GL_VERTEX_SHADER));
-    REQUIRE_NOTHROW(fShader = Shader::shaderFromFile(fShaderPath, GL_FRAGMENT_SHADER));
-    REQUIRE_NOTHROW(shaderProgram = std::shared_ptr<ShaderProgram>(
-            new ShaderProgram(std::vector<std::shared_ptr<Shader>>{fShader, vShader})));
-}
+        REQUIRE_NOTHROW( shaders.push_back(Shader::shaderFromFile(vShaderPath, GL_VERTEX_SHADER)) );
+        REQUIRE_NOTHROW( shaders.push_back(Shader::shaderFromFile(fShaderPath, GL_FRAGMENT_SHADER)) );
+        REQUIRE_NOTHROW( shaderProgram = std::make_shared<ShaderProgram>(shaders) );
+        REQUIRE_NOTHROW( window = Application::getWindow() );
+        REQUIRE_NOTHROW( material = std::make_shared<Material>(shaderProgram) );
+        REQUIRE_NOTHROW( renderer = std::make_shared<Renderer>() );
 
-TEST_CASE("Rendering") {
-    auto window = std::make_shared<Window>( WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE);
-    auto vShader = Shader::shaderFromFile(vShaderPath, GL_VERTEX_SHADER);
-    auto fShader = Shader::shaderFromFile(fShaderPath, GL_FRAGMENT_SHADER);
-    auto shaders = std::vector<std::shared_ptr<Shader> > {fShader, vShader};
-    auto shaderProgram = std::shared_ptr<ShaderProgram> (new ShaderProgram(shaders));
-    auto mesh = std::make_shared<Mesh> (cubeVertPosData, cubeIdxData);
-    auto material = std::shared_ptr<Material> (new Material(shaderProgram));
-    auto renderer = std::shared_ptr<Renderer> (new Renderer());
+        SECTION("Cube") {
+            REQUIRE_NOTHROW( mesh = std::make_shared<Mesh>(cubeVertPosData, cubeIdxData) );
+            Camera camera;
+            camera.setAspectByWindow(*window);
 
-    Camera camera;
-    camera.setAspectByWindow(*window);
+            Transform modelTransform;
+            modelTransform.translation = {0.0f, 0.0f, 5.0f};
 
-    Transform modelTransform;
-    modelTransform.translation = {0.0f, 0.0f, 5.0f};
+            while(!window->shouldClose()) {
+                REQUIRE_NOTHROW( Input::pollEvents() );
+                REQUIRE_NOTHROW( renderer->drawMesh(*mesh, *material, camera, modelTransform) );
+                REQUIRE_NOTHROW( window->swapBuffers() );
+            }
+        }
 
-    while(!window->shouldClose()) {
-        Input::pollEvents();
-        REQUIRE_NOTHROW(renderer->drawMesh(*mesh, *material, camera, modelTransform));
-        window->swapBuffers();
+        SECTION("Textured_triangle") {
+            REQUIRE_NOTHROW( mesh = std::make_shared<Mesh>(cubeVertPosData, cubeIdxData) );
+            REQUIRE_NOTHROW( img = Image::imageFromFile(testImagePath) );
+            REQUIRE_NOTHROW( tex = std::shared_ptr<Texture2D> (new Texture2D(*img))) ;
+            REQUIRE_NOTHROW( img->flipVertically() );
+
+            VertexAttribData<GLfloat> triPosAttribData(
+                    "pos", GL_FLOAT, 3, triVertPosData.data(), 3);
+            VertexAttribData<GLfloat> triUvAttribData(
+                    "texcoord", GL_FLOAT, 2, triVertPosData.data(), 3);
+
+        }
     }
-}
 
-TEST_CASE("Texture_loading") {
-    std::shared_ptr<Window> window;
-    std::shared_ptr<Image> img;
-    std::shared_ptr<Texture2D> tex;
-
-    REQUIRE_NOTHROW(window =
-            std::make_shared<Window>( WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE));
-    REQUIRE_NOTHROW(img =
-            Image::imageFromFile(testImagePath));
-    REQUIRE_NOTHROW(tex =
-            std::shared_ptr<Texture2D> (new Texture2D(*img)));
-    REQUIRE_NOTHROW(img->flipVertically());
-}
-
-TEST_CASE("Texture_triangle") {
-    std::shared_ptr<Window> window;
-    std::shared_ptr<Image> img;
-    std::shared_ptr<Texture2D> tex;
-
-    REQUIRE_NOTHROW(window =
-            std::make_shared<Window>( WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE));
-    REQUIRE_NOTHROW(img =
-            Image::imageFromFile(testImagePath));
-    REQUIRE_NOTHROW(tex =
-            std::shared_ptr<Texture2D> (new Texture2D(*img)));
-    REQUIRE_NOTHROW(img->flipVertically());
-
-    auto vShader = Shader::shaderFromFile(vShaderPath, GL_VERTEX_SHADER);
-    auto fShader = Shader::shaderFromFile(fShaderPath, GL_FRAGMENT_SHADER);
-    auto shaders = std::vector<std::shared_ptr<Shader> > {fShader, vShader};
-    auto shaderProgram = std::shared_ptr<ShaderProgram> (new ShaderProgram(shaders));
-    auto mesh = std::make_shared<Mesh> (triVertPosData, triIdxData);
-    auto material = std::shared_ptr<Material> (new Material(shaderProgram));
-    auto renderer = std::shared_ptr<Renderer> (new Renderer());
-
-    Camera camera;
-    camera.setAspectByWindow(*window);
-
-    Transform modelTransform;
-    modelTransform.translation = {-1.0f, 0.0f, 5.0f};
-
-    while(!window->shouldClose()) {
-        Input::pollEvents();
-        renderer->drawMesh(*mesh, *material, camera, modelTransform);
-        window->swapBuffers();
-    }
+    REQUIRE_NOTHROW( Application::terminate() );
 }
 

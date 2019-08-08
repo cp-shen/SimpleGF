@@ -35,8 +35,6 @@ Matrix Camera::viewMatrix() const {
 }
 
 void Camera::setAspectByWindow(const Window& window) {
-    int bufWidth, bufHeight;
-    glfwGetFramebufferSize(window.getGLFWwindow(), &bufWidth, &bufHeight);
-    aspect = (GLfloat) bufWidth / (GLfloat) bufHeight;
+    aspect = (GLfloat) window.width() / (GLfloat) window.height();
 }
 
