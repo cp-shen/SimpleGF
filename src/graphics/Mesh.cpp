@@ -104,7 +104,7 @@ void Mesh::load() {
         _indexData->_load();
     }
 
-    for(auto attribData : _attribData){
+    for(const auto& attribData : _attribData){
         attribData->_load();
     }
 
