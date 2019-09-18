@@ -1,6 +1,7 @@
 #include <stdexcept>
 
-#include "./GraphicsCommon.h"
+#include "./GraphicsAbstraction.h"
+#include "./Renderer.h"
 
 using namespace SimpleGF;
 
@@ -78,7 +79,7 @@ void Renderer::drawMesh(const Mesh& mesh, const Material& material,
     glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, MatrixToFloatV(mvpMatrix).v);
 
     // draw some primitives
-    if(mesh.ebo())
+    if(mesh.jindexData)
         glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0);
     else
         glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());

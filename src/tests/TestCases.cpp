@@ -1,6 +1,6 @@
 #include <vector>
 #include <memory> // shared_ptr
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #include "../graphics/GraphicsCommon.h"
 #include "../utils/UtilsCommon.h"

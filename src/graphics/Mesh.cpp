@@ -2,7 +2,7 @@
 #include <cstring> // memcpy
 #include <vector>
 
-#include "./GraphicsCommon.h"
+#include "./Mesh.h"
 
 using namespace SimpleGF;
 
@@ -11,9 +11,6 @@ Mesh::Mesh()
     //, _indexCount(0)
     //, _vertexData(nullptr)
     //, _indexData(nullptr)
-    //, _vao(0)
-    //, _vbo(0)
-    //, _ebo(0)
 { }
 
 //Mesh::Mesh(std::vector<GLfloat>& vertData)
@@ -31,14 +28,7 @@ Mesh::Mesh()
     //load();
 //}
 
-Mesh::~Mesh() {
-    //if(_vertexData)
-        //delete[] _vertexData;
-    //if(_indexData)
-        //delete[] _indexData;
-
-    unload();
-}
+Mesh::~Mesh() { }
 
 //void Mesh::setVertexData(const GLfloat* data, unsigned count) {
     //if(!data || count <= 0)
@@ -79,18 +69,6 @@ void Mesh::addAttribData(std::shared_ptr<BaseVertexAttribData> attribData) {
     //return _indexCount;
 //}
 
-GLuint Mesh::vao() const {
-    return _vao;
-}
-
-GLuint Mesh::vbo() const {
-    return _vbo;
-}
-
-GLuint Mesh::ebo() const {
-    return _ebo;
-}
-
 void Mesh::load() {
     if(_attribData.size() == 0)
         throw std::runtime_error("no vertex attrib data in mesh to load");
@@ -113,17 +91,3 @@ void Mesh::load() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
-void Mesh::unload() {
-    if(_vao) {
-        glDeleteVertexArrays(1, &_vao);
-        _vao = 0;
-    }
-    if(_vbo) {
-        glDeleteBuffers(1, &_vbo);
-        _vbo = 0;
-    }
-    if(_ebo) {
-        glDeleteBuffers(1, &_ebo);
-        _ebo = 0;
-    }
-}

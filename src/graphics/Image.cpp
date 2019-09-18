@@ -1,4 +1,4 @@
-#include "./GraphicsCommon.h"
+#include "./Image.h"
 
 //uses stb_image to try load files
 #define STBI_FAILURE_USERMSG
@@ -69,7 +69,7 @@ void Image::flipVertically() {
     unsigned char rowBuffer[rowWidth];
     unsigned halfHeight = _height / 2;
 
-    for(unsigned idx = 0; idx < halfHeight; idx++){
+    for(unsigned idx = 0; idx < halfHeight; idx++) {
         unsigned char* row = _pixels + GetPixelOffset(0, idx, _width, _height, _format);
         unsigned char* oppositeRow = _pixels + GetPixelOffset(0, _height - idx - 1, _width, _height, _format);
 

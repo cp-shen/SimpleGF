@@ -6,7 +6,7 @@
 #include <unordered_set>
 
 #include <GLFW/glfw3.h>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 #define WINDOW_WIDTH 800
 #define WINDOW_HEIGHT 600

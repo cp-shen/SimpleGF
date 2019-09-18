@@ -1,5 +1,7 @@
 #include <cstring> // memcpy
-#include "./GraphicsCommon.h"
+#include <stdexcept> // runtime_error
+
+#include "./VertexIndexData.h"
 
 using namespace SimpleGF;
 
@@ -31,4 +33,8 @@ void VertexIndexData::_set(const GLuint* data, unsigned vertexCount) {
     _vertexCount = vertexCount;
     _data = new GLuint[vertexCount * 3];
     memcpy(_data, data, 3 * vertexCount * sizeof(GLuint));
+}
+
+unsigned VertexIndexData::vertexCount() const {
+    return _vertexCount;
 }

@@ -1,7 +1,7 @@
 #ifndef VERTEX_ATTRIB_DATA_IMPL_H
 #define VERTEX_ATTRIB_DATA_IMPL_H
 
-#include "./GraphicsCommon.h"
+#include "./VertexAttribData.h"
 
 template <typename T>
 SimpleGF::VertexAttribData<T>::VertexAttribData(const char* name,

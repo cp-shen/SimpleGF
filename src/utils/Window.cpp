@@ -2,8 +2,8 @@
 #include <iostream> // std::cout
 #include <cassert> // std::cout
 
-#include "../graphics/GraphicsCommon.h"
-#include "./UtilsCommon.h"
+#include "../graphics/GraphicsAbstraction.h"
+#include "./Window.h"
 
 using namespace SimpleGF;
 

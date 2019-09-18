@@ -1,7 +1,7 @@
 #include <stdexcept> // runtime_error
 #include <cassert>
 
-#include "./GraphicsCommon.h"
+#include "./ShaderProgram.h"
 
 using namespace SimpleGF;
 
@@ -57,7 +57,7 @@ GLint ShaderProgram::getUniformLocation(const GLchar* uniformName) const {
 }
 
 void ShaderProgram::_attachShaders() {
-    assert(_shaders.size() > 0 );
+    assert(_shaders.size() > 0);
 
     for(auto shader_ptr : _shaders){
         assert(shader_ptr != nullptr);
@@ -90,6 +90,7 @@ void ShaderProgram::_attachShaders() {
         msg += infoLog;
         throw std::runtime_error(msg);
     }
+
     // check validate error
     glGetProgramiv(_objectId, GL_VALIDATE_STATUS, &status);
     if(status == GL_FALSE){

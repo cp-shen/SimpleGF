@@ -3,7 +3,7 @@
 #include <cstring> // strlen
 #include <stdexcept> // runtime_error
 
-#include "./GraphicsCommon.h"
+#include "./Shader.h"
 
 using namespace SimpleGF;
 
@@ -21,7 +21,7 @@ Shader::Shader(const char* shaderCode, GLenum shaderType) {
     // compile shader
     glCompileShader(_objectId);
 
-    // check compile failure
+    // check compilation failure
     GLint status;
     glGetShaderiv(_objectId, GL_COMPILE_STATUS, &status);
     if(status == GL_FALSE) {
