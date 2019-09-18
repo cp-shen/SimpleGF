@@ -6,15 +6,15 @@
 namespace SimpleGF {
 
 class Input {
-    public:
-        virtual ~Input();
-        static bool getKeyDown(const Window& window, int key);
-        static void pollEvents();
+public:
+    virtual ~Input();
+    static bool getKeyDown(const Window& window, int key);
+    static void pollEvents();
 
-    private:
-        Input();
+private:
+    Input();
 };
 
-}
+} // namespace SimpleGF
 
 #endif /* INPUT_H */

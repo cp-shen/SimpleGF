@@ -2,10 +2,10 @@
 
 using namespace SimpleGF;
 
-Model::Model()
-    : transform()
-    , _meshMatPairs()
-{ }
+Model::Model() : transform(), _meshMatPairs()
+{
+}
 
-Model::~Model() {
+Model::~Model()
+{
 }

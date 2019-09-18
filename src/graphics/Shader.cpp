@@ -1,16 +1,17 @@
-#include <fstream> // ifstream
-#include <sstream> // stringstream
-#include <cstring> // strlen
+#include <cstring>   // strlen
+#include <fstream>   // ifstream
+#include <sstream>   // stringstream
 #include <stdexcept> // runtime_error
 
 #include "./Shader.h"
 
 using namespace SimpleGF;
 
-Shader::Shader(const char* shaderCode, GLenum shaderType) {
+Shader::Shader(const char* shaderCode, GLenum shaderType)
+{
     // create shader object
     _objectId = glCreateShader(shaderType);
-    if(_objectId == 0)
+    if (_objectId == 0)
         throw std::runtime_error("glCreateShader failed");
 
     // set shader code
@@ -24,7 +25,7 @@ Shader::Shader(const char* shaderCode, GLenum shaderType) {
     // check compilation failure
     GLint status;
     glGetShaderiv(_objectId, GL_COMPILE_STATUS, &status);
-    if(status == GL_FALSE) {
+    if (status == GL_FALSE) {
         std::string msg = "failed to compile shader: " + std::to_string(_objectId);
 
         GLint infoLogLength;
@@ -41,14 +42,16 @@ Shader::Shader(const char* shaderCode, GLenum shaderType) {
     }
 }
 
-Shader::~Shader(){
+Shader::~Shader()
+{
     glDeleteShader(_objectId);
 }
 
-std::shared_ptr<Shader> Shader::shaderFromFile(const char* filePath, GLenum shaderType){
+std::shared_ptr<Shader> Shader::shaderFromFile(const char* filePath, GLenum shaderType)
+{
     std::ifstream f;
     f.open(filePath, std::ios::in | std::ios::binary);
-    if(!f.is_open())
+    if (!f.is_open())
         throw std::runtime_error(std::string("failed to open file: ") + filePath);
 
     std::stringstream buffer;
@@ -57,6 +60,7 @@ std::shared_ptr<Shader> Shader::shaderFromFile(const char* filePath, GLenum shad
     return std::make_shared<Shader>(buffer.str().c_str(), shaderType);
 }
 
-GLuint Shader::objectId() const{
+GLuint Shader::objectId() const
+{
     return _objectId;
 }

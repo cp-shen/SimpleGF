@@ -1,65 +1,71 @@
-#include <stdexcept> // runtime_error
 #include <cassert>
+#include <stdexcept> // runtime_error
 
 #include "./ShaderProgram.h"
 
 using namespace SimpleGF;
 
-ShaderProgram::ShaderProgram(const std::vector<std::shared_ptr<Shader> >& shaders) {
-    if(shaders.size() == 0)
+ShaderProgram::ShaderProgram(const std::vector<std::shared_ptr<Shader>>& shaders)
+{
+    if (shaders.size() == 0)
         throw std::runtime_error("no shader provided to create the program");
-    for(auto shader_ptr : shaders) {
-        if(!shader_ptr)
+    for (auto shader_ptr : shaders) {
+        if (!shader_ptr)
             throw std::runtime_error("shader is null in ShaderProgram ctor");
     }
 
     _objectId = glCreateProgram();
 
-    if(_objectId == 0)
+    if (_objectId == 0)
         throw std::runtime_error("glCreateProgram failed");
 
-     _shaders = shaders;
+    _shaders = shaders;
     _attachShaders();
 }
 
-ShaderProgram::~ShaderProgram(){
+ShaderProgram::~ShaderProgram()
+{
     glDeleteProgram(_objectId);
 }
 
-GLuint ShaderProgram::objectId() const{
+GLuint ShaderProgram::objectId() const
+{
     return _objectId;
 }
 
-GLint ShaderProgram::getAttribLocation(const GLchar* attribName) const {
-    if(!attribName)
+GLint ShaderProgram::getAttribLocation(const GLchar* attribName) const
+{
+    if (!attribName)
         throw std::runtime_error("attribName is null");
 
     GLint location = glGetAttribLocation(_objectId, attribName);
 
-    if(location < 0)
+    if (location < 0)
         throw std::runtime_error("Attrib " + std::string(attribName) +
-                " not found in shaders");
+                                 " not found in shaders");
 
     return location;
 }
 
-GLint ShaderProgram::getUniformLocation(const GLchar* uniformName) const {
-    if(!uniformName)
+GLint ShaderProgram::getUniformLocation(const GLchar* uniformName) const
+{
+    if (!uniformName)
         throw std::runtime_error("uniformName is null");
 
     GLint location = glGetUniformLocation(_objectId, uniformName);
 
-    if(location < 0)
+    if (location < 0)
         throw std::runtime_error("Uniform " + std::string(uniformName) +
-                " not found in shaders");
+                                 " not found in shaders");
 
     return location;
 }
 
-void ShaderProgram::_attachShaders() {
+void ShaderProgram::_attachShaders()
+{
     assert(_shaders.size() > 0);
 
-    for(auto shader_ptr : _shaders){
+    for (auto shader_ptr : _shaders) {
         assert(shader_ptr != nullptr);
         glAttachShader(_objectId, shader_ptr->objectId());
     }
@@ -67,7 +73,7 @@ void ShaderProgram::_attachShaders() {
     glLinkProgram(_objectId);
     glValidateProgram(_objectId);
 
-    for(auto shader_ptr : _shaders){
+    for (auto shader_ptr : _shaders) {
         assert(shader_ptr != nullptr);
         glDetachShader(_objectId, shader_ptr->objectId());
     }
@@ -75,7 +81,7 @@ void ShaderProgram::_attachShaders() {
     // check link error
     GLint status;
     glGetProgramiv(_objectId, GL_LINK_STATUS, &status);
-    if(status == GL_FALSE){
+    if (status == GL_FALSE) {
         std::string msg = "failed to link program: " + std::to_string(_objectId);
 
         GLint infoLogLength;
@@ -93,7 +99,7 @@ void ShaderProgram::_attachShaders() {
 
     // check validate error
     glGetProgramiv(_objectId, GL_VALIDATE_STATUS, &status);
-    if(status == GL_FALSE){
+    if (status == GL_FALSE) {
         std::string msg = "failed to validate program: " + std::to_string(_objectId);
 
         GLint infoLogLength;

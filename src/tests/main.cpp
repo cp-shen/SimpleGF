@@ -1,7 +1,7 @@
 #include "../graphics/GraphicsCommon.h"
 
-#include <stdexcept>
 #include <iostream>
+#include <stdexcept>
 #include <string>
 #include <unordered_set>
 
@@ -18,40 +18,42 @@ Camera g_camera;
 
 ShaderProgram* g_program = nullptr;
 Mesh* g_mesh = nullptr;
-//MeshRenderer* g_meshRenderer = nullptr;
+// MeshRenderer* g_meshRenderer = nullptr;
 GLFWwindow* g_window = nullptr;
 
-std::unordered_set<void(*)()> g_prerenderCallbacks;
+std::unordered_set<void (*)()> g_prerenderCallbacks;
 
 std::string g_vShaderPath = "../shaders/vShader.vert";
 std::string g_fShaderPath = "../shaders/fShader.frag";
 
-void appRelease(){
-    if(!g_program){
+void appRelease()
+{
+    if (!g_program) {
         delete g_program;
         g_program = nullptr;
     }
-    if(!g_mesh){
+    if (!g_mesh) {
         delete g_mesh;
         g_mesh = nullptr;
     }
-    //if(!g_meshRenderer) {
-        //delete g_meshRenderer;
-        //g_meshRenderer = nullptr;
+    // if(!g_meshRenderer) {
+    // delete g_meshRenderer;
+    // g_meshRenderer = nullptr;
     //}
-    if(!g_window) {
+    if (!g_window) {
         glfwDestroyWindow(g_window);
     }
     glfwTerminate();
 }
 
-void printMatrix(Matrix mat) {
+void printMatrix(Matrix mat)
+{
     std::cout << "in printMatrix:" << std::endl;
 
     float16 arr = MatrixToFloatV(mat);
 
-    for(unsigned i = 0; i < 16; i++) {
-        if(i % 4 == 0)
+    for (unsigned i = 0; i < 16; i++) {
+        if (i % 4 == 0)
             std::cout << std::endl;
 
         std::cout << arr.v[i];
@@ -59,53 +61,39 @@ void printMatrix(Matrix mat) {
     std::cout << std::endl;
 }
 
-void loadShaders() {
-    //const GLShader& vShader = GLShader::shaderFromFile(g_vShaderPath.c_str(), GL_VERTEX_SHADER);
-    //const GLShader& fShader = GLShader::shaderFromFile(g_fShaderPath.c_str(), GL_FRAGMENT_SHADER);
-    //GLuint shaders[2] {vShader.objectId(), fShader.objectId()};
+void loadShaders()
+{
+    // const GLShader& vShader = GLShader::shaderFromFile(g_vShaderPath.c_str(), GL_VERTEX_SHADER);
+    // const GLShader& fShader = GLShader::shaderFromFile(g_fShaderPath.c_str(), GL_FRAGMENT_SHADER);
+    // GLuint shaders[2] {vShader.objectId(), fShader.objectId()};
 
-    //g_program = new ShaderProgram(shaders, 2);
+    // g_program = new ShaderProgram(shaders, 2);
 }
 
-void loadMeshData() {
-    GLfloat vertexData[] {
-    // a cube
-        0.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 0.0f,
-        1.0f, 0.0f, 1.0f,
-        0.0f, 0.0f, 1.0f,
-        0.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f,
-        0.0f, 1.0f, 1.0f,
+void loadMeshData()
+{
+    GLfloat vertexData[]{
+        // a cube
+        0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+        0.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 1.0f, 0.0f, 1.0f, 1.0f,
 
-    // a gizmo
-        //0.0f, 0.0f, 0.0f,
-        //1.0f, 0.0f, 0.0f,
-        //0.0f, 1.0f, 0.0f,
-        //0.0f, 0.0f, 1.0f,
+        // a gizmo
+        // 0.0f, 0.0f, 0.0f,
+        // 1.0f, 0.0f, 0.0f,
+        // 0.0f, 1.0f, 0.0f,
+        // 0.0f, 0.0f, 1.0f,
     };
 
     // by default it is counter-clockwise
     // use right hand to judge
-    GLuint indexData[] {
-    // cube index
-        7, 3, 2,
-        7, 2, 6,
-        6, 2, 5,
-        5, 2, 1,
-        4, 5, 1,
-        4, 1, 0,
-        7, 4, 3,
-        3, 4, 0,
-        4, 7, 6,
-        4, 6, 5,
-        3, 0, 2,
-        2, 0, 1,
-    // gizmo index
-        //0, 1,
-        //0, 2,
-        //0, 3,
+    GLuint indexData[]{
+        // cube index
+        7, 3, 2, 7, 2, 6, 6, 2, 5, 5, 2, 1, 4, 5, 1, 4, 1, 0,
+        7, 4, 3, 3, 4, 0, 4, 7, 6, 4, 6, 5, 3, 0, 2, 2, 0, 1,
+        // gizmo index
+        // 0, 1,
+        // 0, 2,
+        // 0, 3,
     };
 
     g_mesh = new Mesh();
@@ -113,10 +101,11 @@ void loadMeshData() {
     g_mesh->setIndexData(indexData, sizeof(indexData) / sizeof(GLuint));
     g_mesh->load();
 
-    //g_meshRenderer = new MeshRenderer(g_mesh, g_program);
+    // g_meshRenderer = new MeshRenderer(g_mesh, g_program);
 }
 
-void updateUniform() {
+void updateUniform()
+{
     glUseProgram(g_program->objectId());
 
     GLint modelUniformLoc = g_program->getUniformLocation("model");
@@ -124,10 +113,10 @@ void updateUniform() {
     GLint projUniformLoc = g_program->getUniformLocation("projection");
 
     // rotate this model around Y axis by frame
-    //Vector3 yAxis = Vector3Zero();
-    //yAxis.y = 1.0f;
-    //g_modelTransform.rotation =
-        //QuaternionMultiply(g_modelTransform.rotation, QuaternionFromAxisAngle(yAxis, 0.05f * DEG2RAD));
+    // Vector3 yAxis = Vector3Zero();
+    // yAxis.y = 1.0f;
+    // g_modelTransform.rotation =
+    // QuaternionMultiply(g_modelTransform.rotation, QuaternionFromAxisAngle(yAxis, 0.05f * DEG2RAD));
 
     // setting value for each Uniform variable
     float16 modelMatrix = MatrixToFloatV(g_modelTransform.toMatrix());
@@ -140,11 +129,13 @@ void updateUniform() {
     glUseProgram(0);
 }
 
-void onError(int errorCode, const char* msg) {
+void onError(int errorCode, const char* msg)
+{
     throw std::runtime_error(msg);
 }
 
-void printGLInfo() {
+void printGLInfo()
+{
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
@@ -154,51 +145,49 @@ void printGLInfo() {
 static Vector3 moveVelocityRaw = Vector3Zero();
 
 // apply movement to the camera transform along the local XYZ axis
-void move() {
+void move()
+{
     const static float moveSpeed = 0.005f;
     Vector3 _move = Vector3Multiply(moveVelocityRaw, moveSpeed);
     _move = Vector3RotateByQuaternion(_move, g_camera.rotation);
     g_camera.position = Vector3Add(g_camera.position, _move);
 }
 
-void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
+{
     // check the window passed in
-    if(!window || window != g_window)
+    if (!window || window != g_window)
         return;
 
     // Use WASDQE keys to move the camera
-    if( key != GLFW_KEY_W &&
-        key != GLFW_KEY_A &&
-        key != GLFW_KEY_S &&
-        key != GLFW_KEY_D &&
-        key != GLFW_KEY_Q &&
-        key != GLFW_KEY_E )
+    if (key != GLFW_KEY_W && key != GLFW_KEY_A && key != GLFW_KEY_S &&
+        key != GLFW_KEY_D && key != GLFW_KEY_Q && key != GLFW_KEY_E)
         return;
 
-    if(action == GLFW_PRESS) {
+    if (action == GLFW_PRESS) {
         g_prerenderCallbacks.insert(move);
         moveVelocityRaw = Vector3Zero();
-        switch(key) {
-            case GLFW_KEY_W:
-                moveVelocityRaw.z = 1.0f;
-                break;
-            case GLFW_KEY_A:
-                moveVelocityRaw.x = 1.0f;
-                break;
-            case GLFW_KEY_S:
-                moveVelocityRaw.z = -1.0f;
-                break;
-            case GLFW_KEY_D:
-                moveVelocityRaw.x = -1.0f;
-                break;
-            case GLFW_KEY_Q:
-                moveVelocityRaw.y = -1.0f;
-                break;
-            case GLFW_KEY_E:
-                moveVelocityRaw.y = 1.0f;
-                break;
-            default:
-                break;
+        switch (key) {
+        case GLFW_KEY_W:
+            moveVelocityRaw.z = 1.0f;
+            break;
+        case GLFW_KEY_A:
+            moveVelocityRaw.x = 1.0f;
+            break;
+        case GLFW_KEY_S:
+            moveVelocityRaw.z = -1.0f;
+            break;
+        case GLFW_KEY_D:
+            moveVelocityRaw.x = -1.0f;
+            break;
+        case GLFW_KEY_Q:
+            moveVelocityRaw.y = -1.0f;
+            break;
+        case GLFW_KEY_E:
+            moveVelocityRaw.y = 1.0f;
+            break;
+        default:
+            break;
         }
     }
     else if (action == GLFW_RELEASE) {
@@ -206,9 +195,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
     }
 }
 
-void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    //std::cout << "xoffset: " + std::to_string(xoffset) << std::endl;
-    //std::cout << "yoffset: " + std::to_string(yoffset) << std::endl;
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    // std::cout << "xoffset: " + std::to_string(xoffset) << std::endl;
+    // std::cout << "yoffset: " + std::to_string(yoffset) << std::endl;
 
     // changing camera fov by yoffset
     float minFov = 10.0f * DEG2RAD;
@@ -216,18 +206,18 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     float fovChangeSpeed = 0.5f * DEG2RAD;
 
     // increasing fov by scroll input
-    if(yoffset < 0 && g_camera.fov < maxFov) {
+    if (yoffset < 0 && g_camera.fov < maxFov) {
         g_camera.fov += fovChangeSpeed;
     }
 
     // decreasing fov by scroll input
-    if(yoffset > 0 && g_camera.fov > minFov) {
+    if (yoffset > 0 && g_camera.fov > minFov) {
         g_camera.fov -= fovChangeSpeed;
     }
 }
 
-
-void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
+void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos)
+{
     static double _xpos = 0.0;
     static double _ypos = 0.0;
     static float _rotX = 0.0f;
@@ -237,7 +227,7 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
     const static float _maxRotX = 80.0f * DEG2RAD;
     static Quaternion _originalRot = g_camera.rotation;
 
-    if(_xpos != 0.0 || _ypos != 0.0) {
+    if (_xpos != 0.0 || _ypos != 0.0) {
         float deltaX = xpos - _xpos;
         float deltaY = ypos - _ypos;
 
@@ -246,9 +236,9 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
 
         // clamp rot values
         _rotX = Clamp(_rotX, _minRotX, _maxRotX);
-        if(_rotY > PI)
+        if (_rotY > PI)
             _rotY -= 2.0f * PI;
-        else if(_rotY < -PI)
+        else if (_rotY < -PI)
             _rotY += 2.0f * PI;
 
         Vector3 xAxis = Vector3Zero();
@@ -259,21 +249,21 @@ void cursor_pos_callback(GLFWwindow* window, double xpos, double ypos) {
         Quaternion qX = QuaternionFromAxisAngle(xAxis, _rotX);
         Quaternion qY = QuaternionFromAxisAngle(yAxis, _rotY);
 
-        g_camera.rotation = QuaternionMultiply(QuaternionMultiply(
-                    qY, _originalRot), qX);
+        g_camera.rotation = QuaternionMultiply(QuaternionMultiply(qY, _originalRot), qX);
 
-        //std::cout << "_rotX: " << std::to_string(_rotX)
-            //<< " _rotY: " << std::to_string(_rotY) << std::endl;
+        // std::cout << "_rotX: " << std::to_string(_rotX)
+        //<< " _rotY: " << std::to_string(_rotY) << std::endl;
     }
 
     _xpos = xpos;
     _ypos = ypos;
 }
 
-void appInit(){
+void appInit()
+{
     // init glfw
     glfwSetErrorCallback(onError);
-    if(!glfwInit())
+    if (!glfwInit())
         throw std::runtime_error("glfwInit failed");
 
     // configure glfw window before creating
@@ -284,9 +274,9 @@ void appInit(){
     glfwWindowHint(GLFW_RESIZABLE, GL_FALSE);
 
     // create glfw window
-    g_window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT,
-            "OpenGL Practice", nullptr, nullptr);
-    if(!g_window)
+    g_window = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, "OpenGL Practice",
+                                nullptr, nullptr);
+    if (!g_window)
         throw std::runtime_error("glfwCreateWindow failed");
 
     // setup OpenGL context
@@ -295,16 +285,16 @@ void appInit(){
     // setup glfw mouse and keyboard input
     // lock cursor to window
     glfwSetInputMode(g_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-    //glfwSetInputMode(g_window, GLFW_STICKY_KEYS, GLFW_TRUE);
+    // glfwSetInputMode(g_window, GLFW_STICKY_KEYS, GLFW_TRUE);
     glfwSetKeyCallback(g_window, key_callback);
     glfwSetScrollCallback(g_window, scroll_callback);
     glfwSetCursorPosCallback(g_window, cursor_pos_callback);
 
     // init glew
     glewExperimental = GL_TRUE;
-    if(glewInit() != GLEW_OK)
+    if (glewInit() != GLEW_OK)
         throw std::runtime_error("glewInit failed");
-    if(!GLEW_VERSION_3_3)
+    if (!GLEW_VERSION_3_3)
         throw std::runtime_error("OpenGL 3.3 API is not avaliable.");
 
     // enable depth testing
@@ -320,11 +310,11 @@ void appInit(){
     glViewport(0, 0, bufWidth, bufHeight);
 
     // setup camera transform
-    g_camera.aspect = (GLfloat) bufWidth / (GLfloat) bufHeight;
+    g_camera.aspect = (GLfloat)bufWidth / (GLfloat)bufHeight;
     // rot 30 degree along X axis
-    //Vector3 xAxis = Vector3Zero();
-    //xAxis.x = 1;
-    //g_camera.rotation = QuaternionFromAxisAngle(xAxis, 30.0f * DEG2RAD);
+    // Vector3 xAxis = Vector3Zero();
+    // xAxis.x = 1;
+    // g_camera.rotation = QuaternionFromAxisAngle(xAxis, 30.0f * DEG2RAD);
 
     // setup model transform
     g_modelTransform.translation.z = 5.0f;
@@ -342,18 +332,19 @@ void appInit(){
     g_prerenderCallbacks.insert(updateUniform);
 }
 
-void appMain() {
+void appMain()
+{
     appInit();
 
-    while(!glfwWindowShouldClose(g_window)) {
+    while (!glfwWindowShouldClose(g_window)) {
         glfwPollEvents();
 
-        for(void(*func)() : g_prerenderCallbacks) {
-            if(func)
+        for (void (*func)() : g_prerenderCallbacks) {
+            if (func)
                 func();
         }
 
-        //g_meshRenderer->render();
+        // g_meshRenderer->render();
 
         glfwSwapBuffers(g_window);
     }
@@ -361,28 +352,27 @@ void appMain() {
     appRelease();
 }
 
-//int main(int argc, char* argv[]) {
-    //try {
-        //if(argc >= 3) {
-            //g_vShaderPath = argv[1];
-            //g_vShaderPath = argv[2];
-        //}
-        //else {
-            //std::cout << "No shader path provided." << std::endl
-                //<< "Use default shader path:" << std::endl
-                //<< g_vShaderPath << std::endl
-                //<< g_fShaderPath << std::endl;
-        //}
-
-        //appMain();
-    //}
-    //catch(const std::exception& e) {
-        //appRelease();
-
-        //std::cerr << "ERROR: " << e.what() << std::endl;
-        //return EXIT_FAILURE;
-    //}
-
-    //return EXIT_SUCCESS;
+// int main(int argc, char* argv[]) {
+// try {
+// if(argc >= 3) {
+// g_vShaderPath = argv[1];
+// g_vShaderPath = argv[2];
+//}
+// else {
+// std::cout << "No shader path provided." << std::endl
+//<< "Use default shader path:" << std::endl
+//<< g_vShaderPath << std::endl
+//<< g_fShaderPath << std::endl;
 //}
 
+// appMain();
+//}
+// catch(const std::exception& e) {
+// appRelease();
+
+// std::cerr << "ERROR: " << e.what() << std::endl;
+// return EXIT_FAILURE;
+//}
+
+// return EXIT_SUCCESS;
+//}

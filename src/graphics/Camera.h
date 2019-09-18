@@ -7,23 +7,23 @@
 namespace SimpleGF {
 
 class Camera {
-    public:
-        Camera();
-        virtual ~Camera();
+public:
+    Camera();
+    virtual ~Camera();
 
-        Matrix projectionMatrix() const;
-        Matrix viewMatrix() const;
-        void setAspectByWindow(const Window& window);
+    Matrix projectionMatrix() const;
+    Matrix viewMatrix() const;
+    void setAspectByWindow(const Window& window);
 
-        float fov; // field of view, in radians
-        float aspect; // width / height;
-        float near;
-        float far;
+    float fov;    // field of view, in radians
+    float aspect; // width / height;
+    float near;
+    float far;
 
-        Vector3 position;
-        Quaternion rotation;
+    Vector3 position;
+    Quaternion rotation;
 };
 
-}
+} // namespace SimpleGF
 
 #endif /* CAMERA_H */

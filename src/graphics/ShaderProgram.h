@@ -10,24 +10,24 @@
 namespace SimpleGF {
 
 class ShaderProgram {
-    public:
-        ShaderProgram(const std::vector<std::shared_ptr<Shader> >& shaders);
-        virtual ~ShaderProgram();
+public:
+    ShaderProgram(const std::vector<std::shared_ptr<Shader>>& shaders);
+    virtual ~ShaderProgram();
 
-        GLuint objectId() const;
-        GLint getAttribLocation(const GLchar* attribName) const;
-        GLint getUniformLocation(const GLchar* uniformName) const;
+    GLuint objectId() const;
+    GLint getAttribLocation(const GLchar* attribName) const;
+    GLint getUniformLocation(const GLchar* uniformName) const;
 
-    private:
-        GLuint _objectId;
-        std::vector<std::shared_ptr<Shader> > _shaders;
+private:
+    GLuint _objectId;
+    std::vector<std::shared_ptr<Shader>> _shaders;
 
-        ShaderProgram(const ShaderProgram& other) = default;
-        ShaderProgram& operator=(const ShaderProgram& other) = default;
+    ShaderProgram(const ShaderProgram& other) = default;
+    ShaderProgram& operator=(const ShaderProgram& other) = default;
 
-        void _attachShaders();
+    void _attachShaders();
 };
 
-}
+} // namespace SimpleGF
 
 #endif /* SHADERPROGRAM_H */

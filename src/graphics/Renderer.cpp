@@ -5,25 +5,27 @@
 
 using namespace SimpleGF;
 
-Renderer::Renderer()
-    : clearColor(0.9f, 0.9f, 0.9f)
-{ }
+Renderer::Renderer() : clearColor(0.9f, 0.9f, 0.9f)
+{
+}
 
-Renderer::~Renderer() { }
+Renderer::~Renderer()
+{
+}
 
-void Renderer::loadMesh(const Mesh& mesh, const Material& material) {
-
-    if(!material.shader)
+void Renderer::loadMesh(const Mesh& mesh, const Material& material)
+{
+    if (!material.shader)
         throw std::runtime_error("no shader provided in the material");
     const ShaderProgram& shader = *material.shader;
 
     static const char* VERT_SHADER_POS_ATTRIB_NAME = "pos";
 
-    //if (!mesh) {
-        //throw std::runtime_error("no mesh data in Renderer");
+    // if (!mesh) {
+    // throw std::runtime_error("no mesh data in Renderer");
     //}
-    //if (!shader) {
-        //throw std::runtime_error("no shader program in Renderer");
+    // if (!shader) {
+    // throw std::runtime_error("no shader program in Renderer");
     //}
     if (!mesh.vao() || !mesh.vbo()) {
         throw std::runtime_error("vao or vbo is not loaded in the mesh");
@@ -32,23 +34,23 @@ void Renderer::loadMesh(const Mesh& mesh, const Material& material) {
     glBindVertexArray(mesh.vao());
     glBindBuffer(GL_ARRAY_BUFFER, mesh.vbo());
 
-    glEnableVertexAttribArray(
-        shader.getAttribLocation(VERT_SHADER_POS_ATTRIB_NAME));
-    glVertexAttribPointer(
-        shader.getAttribLocation(VERT_SHADER_POS_ATTRIB_NAME), 3,
-        GL_FLOAT, GL_FALSE, 0, 0);
+    glEnableVertexAttribArray(shader.getAttribLocation(VERT_SHADER_POS_ATTRIB_NAME));
+    glVertexAttribPointer(shader.getAttribLocation(VERT_SHADER_POS_ATTRIB_NAME),
+                          3, GL_FLOAT, GL_FALSE, 0, 0);
 
     glBindVertexArray(0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void Renderer::drawMesh(const Mesh& mesh, const Material& material,
-        const Camera& camera, const Transform& modelTransform)
+void Renderer::drawMesh(const Mesh& mesh,
+                        const Material& material,
+                        const Camera& camera,
+                        const Transform& modelTransform)
 {
     static const char* VERT_SHADER_MVP_UNIFORM_NAME = "mvp";
 
     // get shader program
-    if(!material.shader)
+    if (!material.shader)
         throw std::runtime_error("no shader provided in the material");
     const ShaderProgram& shader = *material.shader;
 
@@ -59,9 +61,9 @@ void Renderer::drawMesh(const Mesh& mesh, const Material& material,
     Matrix modelMatrix = modelTransform.toMatrix();
     Matrix viewMatrix = MatrixIdentity();
     Matrix projectionMatrix = MatrixIdentity();
-    //if(camera) {
-        viewMatrix = camera.viewMatrix();
-        projectionMatrix = camera.projectionMatrix();
+    // if(camera) {
+    viewMatrix = camera.viewMatrix();
+    projectionMatrix = camera.projectionMatrix();
     //}
     Matrix mvpMatrix = projectionMatrix * viewMatrix * modelMatrix;
 
@@ -79,7 +81,7 @@ void Renderer::drawMesh(const Mesh& mesh, const Material& material,
     glUniformMatrix4fv(mvpLoc, 1, GL_FALSE, MatrixToFloatV(mvpMatrix).v);
 
     // draw some primitives
-    if(mesh.jindexData)
+    if (mesh.jindexData)
         glDrawElements(GL_TRIANGLES, mesh.getIndexCount(), GL_UNSIGNED_INT, 0);
     else
         glDrawArrays(GL_TRIANGLES, 0, mesh.getVertexCount());
@@ -89,4 +91,3 @@ void Renderer::drawMesh(const Mesh& mesh, const Material& material,
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
     glUseProgram(0);
 }
-

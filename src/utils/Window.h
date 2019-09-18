@@ -7,28 +7,29 @@ namespace SimpleGF {
 
 class Window {
     friend class Application; // constructor
-    friend class Input; // _glfwWindow
+    friend class Input;       // _glfwWindow
 
-    public:
-        virtual ~Window();
+public:
+    virtual ~Window();
 
-        void swapBuffers() const;
-        bool shouldClose() const;
-        unsigned width() const;
-        unsigned height() const;
-    private:
-        Window(int wWidth, int wHeight, const char* title);
+    void swapBuffers() const;
+    bool shouldClose() const;
+    unsigned width() const;
+    unsigned height() const;
 
-        // disable copying
-        Window(const Window& other) = default;
-        Window& operator=(const Window& other) = default;
+private:
+    Window(int wWidth, int wHeight, const char* title);
 
-        void _init(int wWidth, int wHeight, const char* title);
-        void _printGLInfo();
+    // disable copying
+    Window(const Window& other) = default;
+    Window& operator=(const Window& other) = default;
 
-        GLFWwindow* _glfwWindow;
+    void _init(int wWidth, int wHeight, const char* title);
+    void _printGLInfo();
+
+    GLFWwindow* _glfwWindow;
 };
 
-}
+} // namespace SimpleGF
 
 #endif /* WINDOW_H */

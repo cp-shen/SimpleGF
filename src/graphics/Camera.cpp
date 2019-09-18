@@ -2,7 +2,8 @@
 
 using namespace SimpleGF;
 
-Camera::Camera() {
+Camera::Camera()
+{
     fov = 45.0f * DEG2RAD;
     aspect = 4.0f / 3.0f;
     near = 0.1f;
@@ -12,15 +13,17 @@ Camera::Camera() {
     rotation = QuaternionIdentity();
 }
 
-Camera::~Camera() {
-
+Camera::~Camera()
+{
 }
 
-Matrix Camera::projectionMatrix() const {
+Matrix Camera::projectionMatrix() const
+{
     return MatrixPerspective(fov, aspect, near, far);
 }
 
-Matrix Camera::viewMatrix() const {
+Matrix Camera::viewMatrix() const
+{
     Vector3 forwardDir = Vector3Zero();
     forwardDir.z = 1;
     forwardDir = Vector3RotateByQuaternion(forwardDir, rotation);
@@ -34,7 +37,7 @@ Matrix Camera::viewMatrix() const {
     return MatrixLookAt(position, target, upDir);
 }
 
-void Camera::setAspectByWindow(const Window& window) {
-    aspect = (GLfloat) window.width() / (GLfloat) window.height();
+void Camera::setAspectByWindow(const Window& window)
+{
+    aspect = (GLfloat)window.width() / (GLfloat)window.height();
 }
-

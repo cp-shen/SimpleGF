@@ -1,39 +1,44 @@
+#include <cassert>   // std::cout
+#include <iostream>  // std::cout
 #include <stdexcept> // runtime_error
-#include <iostream> // std::cout
-#include <cassert> // std::cout
 
 #include "../graphics/GraphicsAbstraction.h"
 #include "./Window.h"
 
 using namespace SimpleGF;
 
-static void glfwOnError(int errorCode, const char* msg) {
+static void glfwOnError(int errorCode, const char* msg)
+{
     throw std::runtime_error(msg);
 }
 
-Window::Window(int wWidth, int wHeight, const char* title) {
+Window::Window(int wWidth, int wHeight, const char* title)
+{
     _init(wWidth, wHeight, title);
 }
 
-Window::~Window() {
+Window::~Window()
+{
     assert(_glfwWindow);
     glfwDestroyWindow(_glfwWindow);
     std::cout << "Window Closed" << std::endl;
 }
 
-void Window::swapBuffers() const {
+void Window::swapBuffers() const
+{
     glfwSwapBuffers(_glfwWindow);
 }
 
-bool Window::shouldClose() const {
+bool Window::shouldClose() const
+{
     return glfwWindowShouldClose(_glfwWindow);
 }
 
-void Window::_init(int wWidth, int wHeight, const char* title) {
-
+void Window::_init(int wWidth, int wHeight, const char* title)
+{
     // init glfw
     glfwSetErrorCallback(glfwOnError);
-    if(!glfwInit())
+    if (!glfwInit())
         throw std::runtime_error("glfwInit failed");
 
     // configure glfw window before creating
@@ -45,7 +50,7 @@ void Window::_init(int wWidth, int wHeight, const char* title) {
 
     // create glfw window
     _glfwWindow = glfwCreateWindow(wWidth, wHeight, title, nullptr, nullptr);
-    if(!_glfwWindow) {
+    if (!_glfwWindow) {
         throw std::runtime_error("glfwCreateWindow failed");
     }
 
@@ -54,9 +59,9 @@ void Window::_init(int wWidth, int wHeight, const char* title) {
 
     // init glew
     glewExperimental = GL_TRUE;
-    if(glewInit() != GLEW_OK)
+    if (glewInit() != GLEW_OK)
         throw std::runtime_error("glewInit failed");
-    if(!GLEW_VERSION_3_3)
+    if (!GLEW_VERSION_3_3)
         throw std::runtime_error("OpenGL 3.3 API is not avaliable.");
 
     // enable depth testing
@@ -75,23 +80,26 @@ void Window::_init(int wWidth, int wHeight, const char* title) {
     _printGLInfo();
 }
 
-void Window::_printGLInfo() {
+void Window::_printGLInfo()
+{
     std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
     std::cout << "GLSL version: " << glGetString(GL_SHADING_LANGUAGE_VERSION) << std::endl;
     std::cout << "Vendor: " << glGetString(GL_VENDOR) << std::endl;
     std::cout << "Renderer: " << glGetString(GL_RENDERER) << std::endl;
 }
 
-unsigned Window::width() const {
+unsigned Window::width() const
+{
     int w = 0;
     int h = 0;
     glfwGetFramebufferSize(_glfwWindow, &w, &h);
-    return (unsigned) w;
+    return (unsigned)w;
 }
 
-unsigned Window::height() const {
+unsigned Window::height() const
+{
     int w = 0;
     int h = 0;
     glfwGetFramebufferSize(_glfwWindow, &w, &h);
-    return (unsigned) h;
+    return (unsigned)h;
 }

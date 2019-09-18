@@ -4,13 +4,12 @@
 namespace SimpleGF {
 
 class MaterialArg {
-    private:
-
-    public:
-        MaterialArg();
-        virtual ~MaterialArg();
+private:
+public:
+    MaterialArg();
+    virtual ~MaterialArg();
 };
 
-}
+} // namespace SimpleGF
 
 #endif /* MATERIALARG_H */

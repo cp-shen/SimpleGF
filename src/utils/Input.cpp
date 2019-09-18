@@ -2,12 +2,14 @@
 
 using namespace SimpleGF;
 
-bool Input::getKeyDown(const Window& window, int key) {
+bool Input::getKeyDown(const Window& window, int key)
+{
     if (glfwGetKey(window._glfwWindow, key) == GLFW_PRESS)
         return true;
     return false;
 }
 
-void Input::pollEvents() {
+void Input::pollEvents()
+{
     glfwPollEvents();
 }
