@@ -1,4 +1,4 @@
-#include "./GraphicsCommon.h"
+#include <SimpleGF/graphics/Material.h>
 
 using namespace SimpleGF;
 

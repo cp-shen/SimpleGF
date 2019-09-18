@@ -2,7 +2,7 @@
 #include <stdexcept> // runtime_error
 #include <vector>
 
-#include "./Mesh.h"
+#include <SimpleGF/graphics/Mesh.h>
 
 using namespace SimpleGF;
 

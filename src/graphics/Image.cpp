@@ -1,4 +1,4 @@
-#include "./Image.h"
+#include <SimpleGF/graphics/Image.h>
 
 // uses stb_image to try load files
 #define STBI_FAILURE_USERMSG

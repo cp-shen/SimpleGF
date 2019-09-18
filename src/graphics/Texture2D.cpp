@@ -1,4 +1,4 @@
-#include "./Texture2D.h"
+#include <SimpleGF/graphics/Texture2D.h>
 
 using namespace SimpleGF;
 

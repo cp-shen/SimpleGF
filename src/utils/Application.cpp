@@ -1,4 +1,4 @@
-#include "./Application.h"
+#include <SimpleGF/utils/Application.h>
 
 using namespace SimpleGF;
 

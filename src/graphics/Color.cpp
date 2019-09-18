@@ -1,4 +1,4 @@
-#include "./Color.h"
+#include <SimpleGF/graphics/Color.h>
 
 using namespace SimpleGF;
 

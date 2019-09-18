@@ -1,7 +1,7 @@
 #include <cassert>
 #include <stdexcept> // runtime_error
 
-#include "./ShaderProgram.h"
+#include <SimpleGF/graphics/ShaderProgram.h>
 
 using namespace SimpleGF;
 

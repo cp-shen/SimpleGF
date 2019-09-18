@@ -1,7 +1,7 @@
 #include <cstring>   // memcpy
 #include <stdexcept> // runtime_error
 
-#include "./VertexIndexData.h"
+#include <SimpleGF/graphics/VertexIndexData.h>
 
 using namespace SimpleGF;
 

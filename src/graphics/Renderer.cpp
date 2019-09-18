@@ -1,7 +1,7 @@
 #include <stdexcept>
 
-#include "./GraphicsAbstraction.h"
-#include "./Renderer.h"
+#include <SimpleGF/graphics/GraphicsAbstraction.h>
+#include <SimpleGF/graphics/Renderer.h>
 
 using namespace SimpleGF;
 

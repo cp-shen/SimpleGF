@@ -1,4 +1,4 @@
-#include "./Camera.h"
+#include <SimpleGF/graphics/Camera.h>
 
 using namespace SimpleGF;
 

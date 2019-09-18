@@ -1,4 +1,4 @@
-#include "./GraphicsCommon.h"
+#include <SimpleGF/graphics/Model.h>
 
 using namespace SimpleGF;
 

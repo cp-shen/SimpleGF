@@ -1,4 +1,4 @@
-#include "./UtilsCommon.h"
+#include <SimpleGF/utils/Input.h>
 
 using namespace SimpleGF;
 

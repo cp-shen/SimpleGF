@@ -3,7 +3,7 @@
 #include <sstream>   // stringstream
 #include <stdexcept> // runtime_error
 
-#include "./Shader.h"
+#include <SimpleGF/graphics/Shader.h>
 
 using namespace SimpleGF;
 
