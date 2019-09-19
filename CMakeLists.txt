@@ -1,20 +1,22 @@
+#cmake file for SimpleGF top-level dir
+
 cmake_minimum_required(VERSION 3.13)
-project(SimpleGF_Test)
+project(SimpleGF)
 
 set(CMAKE_CXX_STANDARD 14)
-set(CMAKE_BUILD_TYPE Debug)  # generate debug symbols
-#set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
 
-include_directories(./include)
+option(DEBUG "build debug symbols" ON)
+option(BUILD_TESTS "build tests" ON)
 
-file(GLOB_RECURSE sourcefiles "./src/*.cpp")
+if(DEBUG)
+    set(CMAKE_BUILD_TYPE Debug)
+endif()
 
-add_executable(SimpleGF_Test
-    ${sourcefiles}
-    )
+include_directories(${SimpleGF_SOURCE_DIR}/include)
 
-target_link_libraries(SimpleGF_Test
-    GL
-    GLEW
-    glfw
-    )
+add_subdirectory(src)
+
+if(BUILD_TESTS)
+    add_subdirectory(tests)
+endif()
+
