@@ -1,7 +1,7 @@
 #ifndef SHADERUNIFORM_H
 #define SHADERUNIFORM_H
 
-#include "./GraphicsAbstraction.h"
+#include "./GL.h"
 #include <string>
 
 namespace SimpleGF {

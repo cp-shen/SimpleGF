@@ -2,7 +2,7 @@
 #define MESH_H
 
 #include "./BaseVertexAttribData.h"
-#include "./GraphicsAbstraction.h"
+#include "./GL.h"
 #include "./VertexIndexData.h"
 #include <memory>
 #include <vector>

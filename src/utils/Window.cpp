@@ -2,7 +2,7 @@
 #include <iostream>  // std::cout
 #include <stdexcept> // runtime_error
 
-#include <SimpleGF/graphics/GraphicsAbstraction.h>
+#include <SimpleGF/graphics/GL.h>
 #include <SimpleGF/utils/Window.h>
 
 using namespace SimpleGF;

@@ -9,7 +9,7 @@
 
 #include "../math/MathCommom.h"
 #include "../utils/UtilsCommon.h"
-#include "./GraphicsAbstraction.h"
+#include "./GL.h"
 
 namespace SimpleGF {
 

@@ -3,7 +3,7 @@
 
 #include <memory> // shared_ptr
 
-#include "./GraphicsAbstraction.h"
+#include "./GL.h"
 
 namespace SimpleGF {
 

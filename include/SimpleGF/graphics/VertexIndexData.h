@@ -1,7 +1,7 @@
 #ifndef VERTEXINDEXDATA_H
 #define VERTEXINDEXDATA_H
 
-#include "./GraphicsAbstraction.h"
+#include "./GL.h"
 
 namespace SimpleGF {
 

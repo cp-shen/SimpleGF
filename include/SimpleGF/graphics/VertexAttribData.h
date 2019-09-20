@@ -2,7 +2,7 @@
 #define VERTEXATTRIBDATA_H
 
 #include "./BaseVertexAttribData.h"
-#include "./GraphicsAbstraction.h"
+#include "./GL.h"
 
 namespace SimpleGF {
 

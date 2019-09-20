@@ -4,7 +4,7 @@
 #include <memory> // shared_ptr
 #include <vector>
 
-#include "./GraphicsAbstraction.h"
+#include "./GL.h"
 #include "./Shader.h"
 
 namespace SimpleGF {

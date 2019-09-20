@@ -1,6 +1,6 @@
 #include <stdexcept>
 
-#include <SimpleGF/graphics/GraphicsAbstraction.h>
+#include <SimpleGF/graphics/GL.h>
 #include <SimpleGF/graphics/Renderer.h>
 
 using namespace SimpleGF;

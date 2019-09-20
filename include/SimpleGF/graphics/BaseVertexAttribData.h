@@ -3,7 +3,7 @@
 
 #include <string>
 
-#include "./GraphicsAbstraction.h"
+#include "./GL.h"
 
 namespace SimpleGF {
 
