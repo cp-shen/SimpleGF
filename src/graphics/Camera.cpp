@@ -32,7 +32,7 @@ Matrix Camera::viewMatrix() const
 
     Vector3 upDir = Vector3Zero();
     upDir.y = 1;
-    forwardDir = Vector3RotateByQuaternion(upDir, rotation);
+    upDir = Vector3RotateByQuaternion(upDir, rotation);
 
     return MatrixLookAt(position, target, upDir);
 }
